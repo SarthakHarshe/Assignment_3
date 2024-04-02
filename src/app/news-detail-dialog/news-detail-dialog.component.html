@@ -1,0 +1,69 @@
+<div class="container-fluid p-0 overflow-hidden">
+  <div class="row">
+    <div class="col">
+      <h2 class="p-2 pb-0 mb-0">{{ newsItem.source }}</h2>
+      <p class="p-2 pt-0 mb-0">{{ formattedDate }}</p>
+    </div>
+    <div class="col d-flex justify-content-end pt-2 pe-4 align-items-center">
+      <button
+        type="button"
+        class="btn-close btn-sm"
+        (click)="closeDialog()"
+      ></button>
+    </div>
+  </div>
+  <hr />
+  <div class="dialog-content p-2">
+    <!-- Text container with ngx-ellipsis -->
+    <h3
+      class="text-container"
+      ellipsis
+      [ellipsis-content]="newsItem.headline"
+    ></h3>
+    <div
+      class="text-container"
+      ellipsis
+      [ellipsis-content]="newsItem.summary"
+    ></div>
+    <p>
+      For more details click
+      <a href="{{ newsItem.url }}" target="_blank">here</a>
+    </p>
+  </div>
+
+  <!-- Add social media share buttons here -->
+  <div class="row ps-1 pt-4 pb-2 m-3 border">
+    <div class="row"><p>Share</p></div>
+    <div class="d-flex flex-row">
+      <!-- Twitter Share Button -->
+      <div>
+        <a
+          [href]="getTwitterShareUrl()"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <fa-icon
+            class="fa-2x"
+            [icon]="faXTwitter"
+            style="color: black"
+          ></fa-icon>
+        </a>
+      </div>
+      <div class="ms-2">
+        <!-- Facebook Share Button -->
+        <a
+          [href]="getFacebookShareUrl()"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <fa-icon
+            class="fa-2x"
+            [icon]="faFacebookSquare"
+            style="color: rgb(54, 0, 243)"
+            size="lg"
+          ></fa-icon>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

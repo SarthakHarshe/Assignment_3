@@ -1,0 +1,15 @@
+.navbar {
+    padding-left: 20px;
+    padding-right: 20px;
+    background-color:rgb(31, 39, 151);
+    color: white;
+}
+
+.nav-item.active {
+    border: 1px solid white;
+    border-radius: 10px;
+}
+
+.nav-item {
+    padding: 2px;
+}

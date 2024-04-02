@@ -1,0 +1,174 @@
+<!-- <div class="container mt-4">
+
+    <div *ngIf="isLoading" class="d-flex justify-content-center">
+      <mat-spinner></mat-spinner>
+    </div>
+
+  <div *ngIf="!isLoading">
+
+    <div *ngIf="portfolio.length === 0" class="alert alert-warning" role="alert">
+      Your portfolio is empty.
+    </div>
+
+    <div *ngIf="successAlert" class="alert alert-success" role="alert">
+      {{ successMessage }}
+    </div>
+    <div *ngIf="errorAlert" class="alert alert-danger" role="alert">
+      {{ errorMessage }}
+    </div>
+    
+    <div *ngFor="let stock of portfolio; let i = index" class="mb-3">
+      <mat-card class="stock-card">
+        <mat-card-header (click)="navigateToDetails(stock.symbol)">
+          <mat-card-title>{{ stock.name }} ({{ stock.symbol }})</mat-card-title>
+          <mat-card-subtitle>{{ stock.exchange }}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="row">
+            <div class="col-md-4">
+              <p>Quantity: {{ stock.quantity }}</p>
+              <p>Avg. Cost / Share: {{ stock.averageCost | currency }}</p>
+              <p>Total Cost: {{ stock.totalCost | currency }}</p>
+            </div>
+            <div class="col-md-4">
+              <p>Change: <span [ngClass]="getChangeClass(stock.change)">{{ stock.change | number:'1.2-2' }}</span></p>
+              <p>Current Price: {{ stock.currentPrice | currency }}</p>
+              <p>Market Value: {{ stock.marketValue | currency }}</p>
+            </div>
+            <div class="col-md-4 d-flex justify-content-end align-items-start">
+              <button mat-stroked-button color="primary" (click)="openBuyDialog(stock)" class="mr-2">Buy</button>
+              <button mat-stroked-button color="warn" (click)="openSellDialog(stock)" [disabled]="stock.quantity <= 0">Sell</button>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+    
+  </div>
+
+   -->
+
+<div class="container mt-5 pt-5">
+  
+
+  <div *ngIf="isLoading" class="d-flex justify-content-center my-5">
+    <mat-spinner diameter="40" mode="indeterminate"></mat-spinner>
+  </div>
+
+  <div *ngIf="!isLoading">
+
+    <h2 class="mb-4">My Portfolio</h2>
+    <h4>Money in Wallet: {{ walletBalance | currency }}</h4>
+
+    <div *ngIf="portfolio.length === 0" class="alert alert-warning mt-4 d-flex justify-content-center" role="alert">
+      Your portfolio is empty.
+    </div>
+
+    <div *ngIf="successAlert" class="alert alert-success mt-4 d-flex justify-content-center" role="alert">
+      {{ successMessage }}
+    </div>
+    <div *ngIf="errorAlert" class="alert alert-danger mt-4 d-flex justify-content-center" role="alert">
+      {{ errorMessage }}
+    </div>
+    <!-- Loop through the portfolio stocks and display them -->
+    <div *ngFor="let stock of portfolio" class="card my-4 shadow-sm overflow-hidden">
+      <div class="card-body p-0 overflow-hidden ">
+        <div class="row bg-body-tertiary ps-2 pt-1 align-items-center border-bottom">
+          <!-- Stock name and symbol -->  
+          <div class="col d-flex">
+            <h4 class="font-weight-bold">{{ stock.symbol }}</h4>
+            <span class="ps-2 pt-1 align-items-center text-secondary">{{ stock.name }} </span>
+          </div> 
+        </div>
+        <!-- Stock details -->
+        <div class="row pb-2 pt-2 ps-2">
+            <div class="col-12 col-md d-flex flex-column align-content-center gap-1">
+              <div class="row d-flex ">
+                <div class="col ">
+                  <p class="mb-0" >Quantity: </p>
+                </div>
+                <div class="col">
+                  <span  >{{ stock.quantity | number : "1.2-2" }}</span>
+                </div>
+              </div>
+              <div class="row d-flex">
+                <div class="col ">
+                  <p class="mb-0" >Avg. Cost/Share: </p>
+                </div>
+                <div class="col">
+                  <span class="" >{{ stock.averageCost | number : "1.2-2" }}</span>
+                </div>
+              </div>
+              <div class="row d-flex">
+                <div class="col ">
+                  <p class="mb-0" >Total Cost:</p>
+                </div>
+                <div class="col"><span >{{ stock.totalCost | number : "1.2-2" }}</span></div>
+              </div>
+            </div>
+        <div class="col-12 col-md d-flex flex-column align-content-center gap-1">
+          <div class="row">
+            <div class="col"><p class="mb-0">
+              Change:
+            </p></div>
+            <div class="col">
+              <span [ngClass]="getChangeClass(stock.change)">
+                <ng-container *ngIf="stock.change > 0; else noChange">
+                  <fa-icon [icon]="faCaretUp"></fa-icon>
+                </ng-container>
+                <ng-container *ngIf="stock.change < 0">
+                  <fa-icon [icon]="faCaretDown"></fa-icon>
+                </ng-container>
+                <ng-template #noChange></ng-template>
+                {{ stock.change | number : "1.2-2" }}
+              </span>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col">
+              <p class="mb-0">
+                Current Price:
+              </p>
+            </div>
+            <div class="col">
+              <span [ngClass]="getChangeClass(stock.change)">
+                {{ stock.currentPrice | number : "1.2-2" }}
+              </span>
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col">
+              <p class="mb-0">
+                Market Value:
+                
+              </p>
+            </div>
+            <div class="col">
+              <span [ngClass]="getChangeClass(stock.change)">
+                {{ stock.marketValue | number : "1.2-2" }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+        <!-- Action buttons -->
+        <div class="row bg-body-tertiary ps-2 pt-2 pb-2 border-top">
+          <div class="col-md-3 text-right ">
+            <button class="btn btn-primary me-2" (click)="openBuyDialog(stock)">
+              Buy
+            </button>
+            <button
+              class="btn btn-danger ml-2"
+              (click)="openSellDialog(stock)"
+              [disabled]="stock.quantity <= 0"
+            >
+              Sell
+            </button>
+          </div>
+        </div>
+    
+  </div>
+</div>

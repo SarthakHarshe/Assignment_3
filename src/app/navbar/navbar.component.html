@@ -1,0 +1,20 @@
+<!-- Navbar for each page using ng bootstrap -->
+<nav class="navbar navbar-dark navbar-expand-lg fixed-top">
+  <a class="navbar-brand" routerLinkActive="active" routerLink="/search" (click)="clearAndNavigate()">Stock Search</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" (click)="isNavbarCollapsed = !isNavbarCollapsed">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse justify-content-end" id="navbarNav" [ngClass]="{'collapse': isNavbarCollapsed}">
+    <ul class="navbar-nav">
+      <li class="nav-item" routerLinkActive="active">
+        <a class="nav-link text-white-50" routerLink="/search">Search</a>
+      </li>
+      <li class="nav-item" routerLinkActive="active">
+        <a class="nav-link text-white-50" routerLink="/watchlist">Watchlist</a>
+      </li>
+      <li class="nav-item" routerLinkActive="active">
+        <a class="nav-link text-white-50" routerLink="/portfolio">Portfolio</a>
+      </li>
+    </ul>
+  </div>
+</nav>

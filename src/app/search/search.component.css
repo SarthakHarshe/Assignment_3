@@ -1,0 +1,73 @@
+.container {
+    margin-top: 50px;
+  }
+  
+h1 {
+    margin-bottom: 30px;
+  }
+
+.input-group {
+    position: relative; 
+  }
+
+
+::ng-deep .mat-form-field-infix {
+    padding-right: 70px; 
+    border-color: rgb(41, 20, 140);
+    z-index: 0;
+  }
+
+.form-control {
+    padding-right: 70px; 
+    /* Add this color: border-color: rgb(41,20,140); */
+    z-index: 0;
+  }
+
+.form-control:focus{
+    z-index: 0;
+    box-shadow: none;
+  }
+
+.form-group {
+    display: flex; 
+    justify-content: flex-end; 
+}
+
+.search-button, .clear-button {
+    position: absolute; /* Set the position to absolute */
+    margin-top: 5px;
+    background: none; /* Remove the default button background */
+    border: none; /* Remove the default button border */
+    cursor: pointer; 
+    z-index: 10;
+  }
+  
+.search-button { 
+    right: 40px; /* Position the search button to the left of the clear button */
+  }
+
+.clear-button {
+    right: 10px; 
+  }
+  
+.search-svg, .clear-svg {
+    width: 20px; /* Set the width of the SVGs */
+    height: 20px; /* Set the height of the SVGs */
+  }
+
+/* Add styles for the search and clear buttons
+.search-button svg {
+    fill: rgb(41,20,140); 
+}
+*/
+
+/*
+.clear-button svg {
+    fill: rgb(41,20,140); 
+} 
+*/
+
+/* Add styles for form-inline if necessary to ensure form layout */
+.form-inline {
+    width: 100%;
+  }

@@ -1,0 +1,5 @@
+.text-container {
+    line-height: 1.2em; 
+    max-height: 3.6em; 
+    overflow: hidden;
+}

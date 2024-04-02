@@ -1,0 +1,278 @@
+<!-- First section with stock details -->
+<div class="container text-center stock-container pt-3">
+
+    <div *ngIf="isLoading" class="spinner-container d-flex justify-content-center">
+      <mat-spinner diameter="40" mode="indeterminate"></mat-spinner>
+    </div>
+
+     <!-- Wrap the existing content in *ngIf="!isLoading" -->
+  <div *ngIf="!isLoading">
+      <!-- Success Alert -->
+      <div *ngIf="stockAddedSuccess" class="alert alert-success mt-2 d-flex justify-content-center" role="alert">
+        {{ stockAddedName }} has been added to your watchlist!
+      </div>
+    
+      <!-- Removal Alert -->
+      <div *ngIf="stockRemovedSuccess" class="alert alert-danger mt-2 d-flex justify-content-center" role="alert">
+        {{ stockRemovedName }} has been removed from your watchlist!
+      </div>
+    
+      <!-- Alerts for adding stock to the portfolio -->
+      <!-- Buy/Sell Success Alert -->
+      <div *ngIf="buySuccess || sellSuccess" class="alert alert-success mt-2 d-flex justify-content-center" role="alert">
+        {{ successMessage }}
+      </div>
+    
+      <!-- Buy/Sell Error Alert -->
+      <div *ngIf="buyErrorMessage || sellErrorMessage" class="alert alert-danger mt-2 d-flex justify-content-center" role="alert">
+        {{ buyErrorMessage || sellErrorMessage }}
+      </div>
+      
+      <div class="row stock-row h-100">
+        <div class="col">
+          <ng-container *ngIf="companyProfile$ | async as companyProfile">
+            <h2>
+              {{ companyProfile.ticker }}
+              <span class="star-icon"
+                ><fa-icon
+                  [icon]="isInWatchlist ? fasStar : farStar"
+                  (click)="toggleWatchlist(companyProfile.ticker)"
+                  [style.color]="isInWatchlist ? 'gold' : 'black'"
+                  size="xs"
+                ></fa-icon
+              ></span>
+            </h2>
+            <h5>{{ companyProfile.name }}</h5>
+            <p>{{ companyProfile.exchange }}</p>
+            <ng-container *ngIf="stockQuote$ | async as stockQuote">
+              <div class="row">
+                <div class="col-6 justify-content-end pe-0 d-sm-flex">
+                  <button
+                    class="btn btn-success"
+                    (click)="openBuyDialog(companyProfile.ticker)"
+                  >
+                    Buy
+                  </button>
+                </div>
+                <div class="col-6 justify-content-start ps-0 d-sm-flex">
+                  <button
+                    *ngIf="isStockInPortfolio"
+                    class="btn btn-danger ms-2"
+                    (click)="openSellDialog(companyProfile.ticker)"
+                  >
+                    Sell
+                  </button>
+                </div>
+              </div>
+            </ng-container>
+          </ng-container>
+        </div>
+        <div class="col">
+          <ng-container *ngIf="companyProfile$ | async as companyProfile">
+            <img [src]="companyProfile.logo" alt="Logo" class="company-logo" />
+          </ng-container>
+        </div>
+        <div class="col">
+          <ng-container *ngIf="stockQuote$ | async as stockQuote">
+            <h2 [ngClass]="{
+              'text-success': stockQuote.d >= 0,
+              'text-danger': stockQuote.d < 0
+            }" >{{ stockQuote.c }}</h2>
+            <p
+              [ngClass]="{
+                'text-success': stockQuote.d >= 0,
+                'text-danger': stockQuote.d < 0
+              }"
+            >
+            <span>
+              <ng-container *ngIf="stockQuote.d > 0; else changeOrNoChange">
+                <fa-icon [icon]="faCaretUp"></fa-icon>
+              </ng-container>
+              <ng-template #changeOrNoChange>
+                <ng-container *ngIf="stockQuote.d < 0">
+                  <fa-icon [icon]="faCaretDown"></fa-icon>
+                </ng-container>
+              </ng-template>
+              {{ stockQuote.d | number : "1.2-2" }} ({{ stockQuote.dp | number : "1.2-2" }}%)
+            </span>
+            </p>
+            <p>{{ currentDateTime }}</p>
+          </ng-container>
+        </div>
+      </div>
+      <div class="row">
+        <ng-container *ngIf="stockQuote$ | async as stockQuote">
+          <p class="pt-3" [ngClass]="marketStatusClass(stockQuote.t)">
+            {{ marketStatus(stockQuote.t) }}
+          </p>
+        </ng-container>
+      </div>
+    
+      <!-- Second section with tabs -->
+    
+      <mat-tab-group preserveContent="true">
+        <!-- Summary Tab -->
+        <!-- Summary Tab -->
+        <mat-tab label="Summary">
+          <div class="container text-center">
+            <div class="row">
+              <div class="col-md-6" *ngIf="stockQuote$ | async as stockQuote">
+                <div class="row" >
+                  <div>High Price: {{ stockQuote.h }}</div>
+                  <div>Low Price: {{ stockQuote.l }}</div>
+                  <div>Open Price: {{ stockQuote.o }}</div>
+                  <div>Prev. Close: {{ stockQuote.pc }}</div>
+                </div>
+                <div class="row mt-4" *ngIf="companyProfile$ | async as companyProfile">
+                  <div>
+                    About the company
+                  </div>
+                  <div>IPO Start Date: {{ companyProfile.ipo }}</div>
+                  <div>Industry: {{ companyProfile.finnhubIndustry }}</div>
+                  <div>
+                    Webpage:
+                    <a href="{{ companyProfile.weburl }}">{{
+                      companyProfile.weburl
+                    }}</a>
+                  </div>
+                  <div *ngIf="companyPeers$ | async as companyPeers">
+                    <p>Company Peers:</p>
+                    <span *ngFor="let peer of companyPeers; let isLast = last">
+                      <a [routerLink]="['/search', peer]" (click)="onPeerSelected(peer)">{{ peer }}</a><ng-container *ngIf="!isLast">, </ng-container>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6" *ngIf="(chartOptions | async) as chartOptionsValue"><div>
+                <highcharts-chart
+                  [Highcharts]="Highcharts"
+                  [options]="chartOptionsValue"
+                  style="width: 100%; height: 400px; display: block;">
+                </highcharts-chart>
+              </div>
+            </div>
+            </div>
+          </div>
+        </mat-tab>
+    
+        <!-- News Tab -->
+        <mat-tab label="Top News">
+          <div class="container mt-3">
+            <div class="row">
+              <ng-container *ngIf="topNews$ | async as topNews">
+                <div
+                  *ngFor="let newsItem of topNews"
+                  class="col-sm-12 col-md-6 col-lg-6 mb-3"
+                >
+                  <div class="card card-custom" (click)="openNewsDetail(newsItem)">
+                    <div class="card-body d-flex flex-column flex-md-row">
+                      <div class="d-flex justify-content-center justify-content-md-start col-12 col-md-4 mb-3 mb-md-0 col-sm-12">
+                        <img
+                        [src]="newsItem.image"
+                        alt="{{ newsItem.headline }}"
+                        class="img-fluid img-custom"
+                      />
+                      </div>
+                      <div class="col align-middle d-flex align-items-center justify-content-center p-2">
+                        <p class="card-title">{{ newsItem.headline }}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </mat-tab>
+    
+        <!-- Charts Tab -->
+        <mat-tab label="Charts">
+          <div *ngIf="chartOptions1 | async as chartOptions1Value">
+            <highcharts-chart
+              [Highcharts]="Highcharts1"
+              [options]="chartOptions1Value"
+              style="width: 100%; height: 400px; display: block">
+            </highcharts-chart>
+          </div>
+        </mat-tab>
+    
+        <!-- Insights Tab -->
+        <mat-tab label="Insights">
+          <div class="container text-center">
+            <div class="row justify-content-md-center" *ngIf="insiderSentiment$ | async as insiderSentiment">
+              <div class="col-lg-6">
+                <h3>Insider Sentiments</h3>
+                <table class="table">
+                  <thead>
+                    <tr *ngIf="companyProfile$ | async as companyProfile">
+                      <th>{{companyProfile.name}}</th>
+                      <th>MSPR</th>
+                      <th>Change</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <ng-container
+                      *ngIf="insiderSentiment$ | async as insiderSentiment"
+                    >
+                      <tr>
+                        <td>Total</td>
+                        <td>
+                          {{
+                            insiderSentiment.data | aggregateMSPR | number : "1.2-2"
+                          }}
+                        </td>
+                        <td>{{ insiderSentiment.data | aggregateChange }}</td>
+                      </tr>
+                      <tr>
+                        <td>Positive</td>
+                        <td>
+                          {{
+                            insiderSentiment.data
+                              | aggregatePositiveMSPR
+                              | number : "1.2-2"
+                          }}
+                        </td>
+                        <td>
+                          {{ insiderSentiment.data | aggregatePositiveChange }}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Negative</td>
+                        <td>
+                          {{
+                            insiderSentiment.data
+                              | aggregateNegativeMSPR
+                              | number : "1.2-2"
+                          }}
+                        </td>
+                        <td>
+                          {{ insiderSentiment.data | aggregateNegativeChange }}
+                        </td>
+                      </tr>
+                    </ng-container>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+    
+            <!-- Charts row -->
+            <div class="row">
+              <div class="col-lg-6 col-md-6 col-sm-12 mb-2" *ngIf="(chartOptions2 | async) as chartOptions2Value">
+                <highcharts-chart
+                  [Highcharts]="Highcharts1"
+                  [options]="chartOptions2Value"
+                  style="width: 100%; height: 400px; display: block">
+                </highcharts-chart>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-12 mb-2" *ngIf="(chartOptions3 | async) as chartOptions3Value">
+                <highcharts-chart
+                  [Highcharts]="Highcharts1"
+                  [options]="chartOptions3Value"
+                  style="width: 100%; height: 400px; display: block">
+                </highcharts-chart>
+              </div>
+            </div>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+  </div>
+</div>

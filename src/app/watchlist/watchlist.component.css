@@ -1,0 +1,30 @@
+.card {
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.btn-close {
+  font-size: 1.25rem;
+}
+
+.card-title {
+  margin-bottom: 0;
+}
+
+.card-subtitle {
+  font-size: 0.9rem;
+}
+
+.btn-close {
+  font-size: 0.5rem;
+}
+
+
+/* Colors for price increase/decrease */
+.text-success {
+  color: #28a745; /* Bootstrap's .text-success color */
+}
+
+.text-danger {
+  color: #dc3545; /* Bootstrap's .text-danger color */
+}
